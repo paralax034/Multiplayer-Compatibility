@@ -25,5 +25,23 @@ public class VanillaTemperatureExpanded
         MP.RegisterSyncMethod(type, "InterfaceChangeTargetNetworkTemperature");
         // Reset temperature
         MP.RegisterSyncMethodLambda(type, nameof(Thing.GetGizmos), 2);
+
+        var compHeatPusherType = AccessTools.TypeByName("VanillaTemperatureExpanded.Comps.CompHeatPusherPoweredWithIdleDraw");
+        var shouldPushProp = AccessTools.PropertyGetter(compHeatPusherType, "ShouldPushHeatNow");
+        if (shouldPushProp != null)
+        {
+            MpCompat.harmony.Patch(shouldPushProp, prefix: new HarmonyMethod(typeof(VanillaTemperatureExpanded), nameof(ShouldPushHeatNowPrefix)));
+        }
+    }
+
+    private static bool ShouldPushHeatNowPrefix(ThingComp __instance, ref bool __result)
+    {
+        if (__instance.parent is not { Spawned: true, Map: not null })
+        {
+            __result = false;
+            return false;
+        }
+
+        return true;
     }
 }

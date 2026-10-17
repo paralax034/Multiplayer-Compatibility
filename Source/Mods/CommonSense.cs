@@ -28,6 +28,8 @@ namespace Multiplayer.Compat
 
             // RNG Patch
             PatchingUtilities.PatchUnityRand("CommonSense.JobGiver_Wander_TryGiveJob_CommonSensePatch:Postfix", false);
+            // Isolate random recipe and ingredient selection on ThingMaker during meal production
+            PatchingUtilities.PatchPushPopRand("CommonSense.ThingMaker_MakeThing_CommonSensePatch:Postfix");
 
             // Gizmo patch
             MpCompat.RegisterLambdaMethod("CommonSense.DoCleanComp", "CompGetGizmosExtra", 1);
