@@ -205,7 +205,7 @@ namespace Multiplayer.Compat
         internal static IEnumerable<CodeInstruction> FixRNG(IEnumerable<CodeInstruction> instr, MethodBase original)
         {
             var anythingPatched = false;
-            
+
             foreach (var ci in instr)
             {
                 if (ci.opcode == OpCodes.Newobj && ci.operand is ConstructorInfo constructorInfo)
@@ -233,7 +233,7 @@ namespace Multiplayer.Compat
         {
             private static RandRedirector instance;
             public static RandRedirector Instance => instance ??= new RandRedirector();
-            
+
             public RandRedirector()
             { }
 
@@ -274,7 +274,7 @@ namespace Multiplayer.Compat
         internal static IEnumerable<CodeInstruction> FixUnityRNG(IEnumerable<CodeInstruction> instr, MethodBase original)
         {
             var anythingPatched = false;
-            
+
             foreach (var ci in instr)
             {
                 if (ci.opcode == OpCodes.Call && ci.operand is MethodInfo method)
@@ -397,7 +397,7 @@ namespace Multiplayer.Compat
         {
             if (type == null)
             {
-                Log.Error(methodName == null 
+                Log.Error(methodName == null
                     ? "Trying to patch current map usage for null type and null or empty method name."
                     : $"Trying to patch current map usage for null type ({methodName}).");
                 return;
@@ -568,63 +568,63 @@ namespace Multiplayer.Compat
                 switch (type)
                 {
                     case CurrentMapUserType.Thing:
-                    {
-                        // Call the thing's Map getter
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map))));
+                        {
+                            // Call the thing's Map getter
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map))));
 
-                        break;
-                    }
+                            break;
+                        }
                     case CurrentMapUserType.ThingComp:
-                    {
-                        // Load the comps's parent thing field
-                        instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(ThingComp), nameof(ThingComp.parent))));
-                        // Call the parent thing's Map getter
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map))));
+                        {
+                            // Load the comps's parent thing field
+                            instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(ThingComp), nameof(ThingComp.parent))));
+                            // Call the parent thing's Map getter
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map))));
 
-                        break;
-                    }
+                            break;
+                        }
                     case CurrentMapUserType.Hediff:
-                    {
-                        // Load the hediff's pawn field
-                        instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(Hediff), nameof(Hediff.pawn))));
-                        // Call the pawn's Map getter
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.Map))));
+                        {
+                            // Load the hediff's pawn field
+                            instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(Hediff), nameof(Hediff.pawn))));
+                            // Call the pawn's Map getter
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.Map))));
 
-                        break;
-                    }
+                            break;
+                        }
                     case CurrentMapUserType.HediffComp:
-                    {
-                        // Call the comp's Pawn getter (which is just short for getting parent field followed by pawn field)
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(HediffComp), nameof(HediffComp.Pawn))));
-                        // Call the pawn's Map getter
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.Map))));
+                        {
+                            // Call the comp's Pawn getter (which is just short for getting parent field followed by pawn field)
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(HediffComp), nameof(HediffComp.Pawn))));
+                            // Call the pawn's Map getter
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(Pawn), nameof(Pawn.Map))));
 
-                        break;
-                    }
+                            break;
+                        }
                     case CurrentMapUserType.GameCondition:
-                    {
-                        // Call the `SingleMap` getter
-                        instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(GameCondition), nameof(GameCondition.SingleMap))));
+                        {
+                            // Call the `SingleMap` getter
+                            instructions.Add(new CodeInstruction(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(GameCondition), nameof(GameCondition.SingleMap))));
 
-                        break;
-                    }
+                            break;
+                        }
                     case CurrentMapUserType.MapComponent:
-                    {
-                        // Access the `map` field
-                        instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(MapComponent), nameof(MapComponent.map))));
+                        {
+                            // Access the `map` field
+                            instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(MapComponent), nameof(MapComponent.map))));
 
-                        break;
-                    }
+                            break;
+                        }
                     // Based on method arguments
                     case CurrentMapUserType.IncidentParms:
-                    {
-                        // Load the `IncidentParms.target` field
-                        instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(IncidentParms), nameof(IncidentParms.target))));
-                        // Cast the IIncidentTarget to Map
-                        instructions.Add(new CodeInstruction(OpCodes.Castclass, typeof(Map)));
+                        {
+                            // Load the `IncidentParms.target` field
+                            instructions.Add(new CodeInstruction(OpCodes.Ldfld, AccessTools.DeclaredField(typeof(IncidentParms), nameof(IncidentParms.target))));
+                            // Cast the IIncidentTarget to Map
+                            instructions.Add(new CodeInstruction(OpCodes.Castclass, typeof(Map)));
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 return instructions.AsReadOnly();
@@ -665,7 +665,7 @@ namespace Multiplayer.Compat
             {
                 if (typeof(Thing).IsAssignableFrom(type))
                     return CurrentMapUserType.Thing;
-                
+
                 if (typeof(ThingComp).IsAssignableFrom(type))
                     return CurrentMapUserType.ThingComp;
 
@@ -710,7 +710,7 @@ namespace Multiplayer.Compat
         }
 
         #endregion
-        
+
         #region TryGainMemory early thought init
 
         public delegate bool TryHandleGainMemory(Thought_Memory thought);
@@ -891,6 +891,9 @@ namespace Multiplayer.Compat
         private static Type timestampFixerDelegateType;
         private static Type timestampFixerListType;
         private static AccessTools.FieldRef<IDictionary> timestampFieldsDictionaryField;
+        private static Type timestampFixerType;
+        private static MethodInfo timestampFixerAddMethod;
+        private static FieldInfo resolvedFieldsField;
 
         public static void RegisterTimestampFixer(Type type, MethodInfo timestampFixerMethod)
         {
@@ -902,23 +905,63 @@ namespace Multiplayer.Compat
 
             InitializeTimestampFixer();
 
-            // Initialize call will display proper errors if needed
-            if (timestampFixerDelegateType == null || timestampFixerListType == null || timestampFieldsDictionaryField == null)
+            if (timestampFixerType == null || timestampFixerDelegateType == null)
                 return;
 
             try
             {
+                // Modern Multiplayer branch: invoke TimestampFixer.Add<T>(FieldGetter<T>, int minValid = int.MinValue)
+                if (timestampFixerAddMethod != null)
+                {
+                    var targetType = type;
+                    if (!typeof(IExposable).IsAssignableFrom(targetType))
+                    {
+                        Log.Error($"Trying to register timestamp fixer failed: {targetType} does not implement {nameof(IExposable)}.");
+                        return;
+                    }
+
+                    var fieldGetterType = timestampFixerDelegateType.MakeGenericType(targetType);
+                    Delegate del;
+                    try
+                    {
+                        del = Delegate.CreateDelegate(fieldGetterType, timestampFixerMethod);
+                    }
+                    catch
+                    {
+                        // Fallback if timestampFixerMethod parameter targets a base type of targetType
+                        var paramType = timestampFixerMethod.GetParameters().FirstOrDefault()?.ParameterType;
+                        if (paramType != null && paramType != targetType && typeof(IExposable).IsAssignableFrom(paramType))
+                        {
+                            targetType = paramType;
+                            fieldGetterType = timestampFixerDelegateType.MakeGenericType(targetType);
+                            del = Delegate.CreateDelegate(fieldGetterType, timestampFixerMethod);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+
+                    timestampFixerAddMethod.MakeGenericMethod(targetType).Invoke(null, new object[] { del, int.MinValue });
+
+                    if (resolvedFieldsField?.GetValue(null) is IDictionary resolvedDict)
+                    {
+                        resolvedDict.Clear();
+                    }
+                    return;
+                }
+
+                // Legacy Multiplayer branch fallback
+                if (timestampFixerListType == null || timestampFieldsDictionaryField == null)
+                    return;
+
                 var dict = timestampFieldsDictionaryField();
                 IList list;
-                // If the dictionary already contains list of timestamp fixers for
-                // a given type, use that list and add another one to it.
                 if (dict.Contains(type))
                     list = (IList)dict[type];
-                // If needed, create a new list of timestamp fixers for a given type.
                 else
                     dict[type] = list = (IList)Activator.CreateInstance(timestampFixerListType);
 
-                // Create a FieldGetter<IExposable> delegate using the provided method
                 list.Add(Delegate.CreateDelegate(timestampFixerDelegateType, timestampFixerMethod));
             }
             catch (Exception e)
@@ -935,34 +978,47 @@ namespace Multiplayer.Compat
 
             try
             {
-                var type = AccessTools.TypeByName("Multiplayer.Client.Patches.TimestampFixer");
-                if (type == null)
+                timestampFixerType = AccessTools.TypeByName("Multiplayer.Client.Patches.TimestampFixer");
+                if (timestampFixerType == null)
                 {
                     Log.Error("Trying to initialize timestamp fixer failed, could not find TimestampFixer type.");
                     return;
                 }
 
-                // Get the type of the delegate. We need to specify `1 as it's a generic delegate.
-                var delType = AccessTools.Inner(type, "FieldGetter`1");
+                timestampFixerAddMethod = AccessTools.DeclaredMethod(timestampFixerType, "Add");
+                resolvedFieldsField = AccessTools.DeclaredField(timestampFixerType, "resolvedFields");
+
+                var delType = AccessTools.Inner(timestampFixerType, "FieldGetter`1");
                 if (delType == null)
                 {
                     Log.Error("Trying to initialize timestamp fixer failed, could not find FieldGetter inner type.");
                     return;
                 }
 
-                timestampFieldsDictionaryField = AccessTools.StaticFieldRefAccess<IDictionary>(
-                    AccessTools.DeclaredField(type, "timestampFields"));
-                // The list only accepts FieldGetter<IExposable>
-                timestampFixerDelegateType = delType.MakeGenericType(typeof(IExposable));
-                timestampFixerListType = typeof(List<>).MakeGenericType(timestampFixerDelegateType);
+                // In modern Multiplayer, TimestampFixer uses Add<T>(FieldGetter<T>, int) and stores FieldFixer delegates.
+                // In legacy Multiplayer, timestampFields directly stores List<FieldGetter<IExposable>>.
+                if (timestampFixerAddMethod == null)
+                {
+                    timestampFieldsDictionaryField = AccessTools.StaticFieldRefAccess<IDictionary>(
+                        AccessTools.DeclaredField(timestampFixerType, "timestampFields"));
+                    timestampFixerDelegateType = delType.MakeGenericType(typeof(IExposable));
+                    timestampFixerListType = typeof(List<>).MakeGenericType(timestampFixerDelegateType);
+                }
+                else
+                {
+                    timestampFixerDelegateType = delType;
+                }
             }
             catch (Exception e)
             {
                 Log.Error($"Trying to initialize timestamp fixer failed, exception caught:\n{e}");
 
+                timestampFixerType = null;
+                timestampFixerAddMethod = null;
                 timestampFixerDelegateType = null;
                 timestampFixerListType = null;
                 timestampFieldsDictionaryField = null;
+                resolvedFieldsField = null;
             }
         }
 
